@@ -6,7 +6,7 @@
  */
 buildscript {
   ext {
-    kotlinVersion = '1.2.60'
+    kotlinVersion = "1.4.21"
   }
 
   repositories {
@@ -20,13 +20,14 @@ buildscript {
 plugins {
   id 'java'
   id 'application'
-  id 'com.github.johnrengelman.shadow' version '2.0.4'
+  id "com.github.johnrengelman.shadow" version "2.0.4"
+  id "org.jetbrains.kotlin.jvm" version "1.4.21"
+  id "org.jetbrains.kotlin.plugin.serialization" version "1.4.21"
 }
-apply plugin: 'kotlin'
 ext {
-  kotlinVersion = '1.2.60'
-  vertxVersion = '3.6.3'
-  junitJupiterEngineVersion = '5.2.0'
+  kotlinVersion = "1.4.21"
+  vertxVersion = "4.0.0"
+  junitJupiterEngineVersion = "5.2.0"
 }
 
 repositories {
@@ -48,12 +49,12 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
 
   implementation "io.vertx:vertx-core:$vertxVersion"
-  implementation "io.vertx:vertx-rx-java2:$vertxVersion"
+  implementation "io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion"
   implementation "io.vertx:vertx-auth-jwt:$vertxVersion"
   implementation "io.vertx:vertx-web:$vertxVersion"
   implementation "io.vertx:vertx-jdbc-client:$vertxVersion"
   implementation "mysql:mysql-connector-java:8.0.15"
-
+  implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
   testImplementation "io.vertx:vertx-junit5:$vertxVersion"
   testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitJupiterEngineVersion")
 }
