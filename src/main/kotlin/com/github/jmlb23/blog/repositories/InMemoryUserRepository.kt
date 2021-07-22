@@ -1,28 +1,30 @@
 package com.github.jmlb23.blog.repositories
 
-import com.github.jmlb23.blog.call
-import com.github.jmlb23.blog.domain.Post
+import arrow.core.*
+import com.github.jmlb23.blog.Enviroment
 import com.github.jmlb23.blog.domain.User
-import com.github.jmlb23.blog.update
-import io.vertx.ext.jdbc.JDBCClient
 
 
-class InMemoryUserRepository : Repository<User> {
+class InMemoryUserRepository : Repository<Enviroment, User, RepoErrors> {
     val memory = mutableListOf<User>()
+    override suspend fun Enviroment.getElement(id: Long): Either<RepoErrors, User> =
+        memory.firstOrNull { it.id == id }.toOption().toEither { RepoErrors.NotFound }
 
-    override suspend fun getElement(id: Long): User? = memory.firstOrNull { it.id == id }
 
+    override suspend fun Enviroment.getAll(): Either<RepoErrors, List<User>> = memory.right()
 
-    override suspend fun getAll(): List<User> = memory
+    override suspend fun Enviroment.remove(id: Long): Either<RepoErrors, Int> =
+        (if (memory.removeIf { it.id == id }) id.toInt().right() else RepoErrors.NotFound.left())
 
-    override suspend fun remove(id: Long): Int = memory.removeIf { it.id == id }.compareTo(true)
+    override suspend fun Enviroment.update(id: Long, entity: User): Either<RepoErrors, Int> =
+        remove(id).flatMap { add(entity) }
 
-    override suspend fun update(id: Long, entity: User): Int =
-        (memory.removeIf { it.id == id}.takeIf { it }?.let { memory.add(entity) } ?: false).compareTo(true)
+    override suspend fun Enviroment.add(entity: User): Either<RepoErrors, Int> =
+        (if (memory.contains(entity)) RepoErrors.AlreadyContained.left() else memory.add(entity)
+            .let { entity.id.toInt().right() })
 
-    override suspend fun add(entity: User): Int =
-        memory.add(entity).compareTo(true)
+    override suspend fun Enviroment.filter(pred: (User) -> Boolean): Either<RepoErrors, List<User>> =
+        getAll().map { it.filter(pred) }
 
-    override suspend fun filter(pred: (User) -> Boolean): List<User> = getAll().filter(pred)
 
 }

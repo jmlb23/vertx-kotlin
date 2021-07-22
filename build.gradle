@@ -46,8 +46,9 @@ def watchForChange = 'src/**/*'
 def doOnChange = './gradlew classes'
 
 dependencies {
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+  def arrow_version = "0.13.2"
 
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
   implementation "io.vertx:vertx-core:$vertxVersion"
   implementation "io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion"
   implementation "io.vertx:vertx-auth-jwt:$vertxVersion"
@@ -55,6 +56,9 @@ dependencies {
   implementation "io.vertx:vertx-jdbc-client:$vertxVersion"
   implementation "mysql:mysql-connector-java:8.0.15"
   implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
+  implementation platform("io.arrow-kt:arrow-stack:$arrow_version")
+  implementation "io.arrow-kt:arrow-core"
+  implementation "io.arrow-kt:arrow-fx-coroutines"
   testImplementation "io.vertx:vertx-junit5:$vertxVersion"
   testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitJupiterEngineVersion")
 }
